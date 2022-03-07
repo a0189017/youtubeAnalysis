@@ -19,10 +19,12 @@ func UtuberDetail(UID []db.UtuberInfo) {
 	for i := 1; i <= 10; i++ {
 		go detailWorker(jobs, result)
 	}
-	for _, value := range UID {
-		jobs <- value
-	}
-	close(jobs)
+	go func() {
+		for _, value := range UID {
+			jobs <- value
+		}
+		close(jobs)
+	}()
 	for i := 0; i < len(UID); i++ {
 		<-result
 	}
